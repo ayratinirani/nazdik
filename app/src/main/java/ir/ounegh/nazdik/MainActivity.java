@@ -40,13 +40,15 @@ public class MainActivity extends AppCompatActivity implements LocationListener
 		if(!isfirst){
 			//tv.setText(p1.bearingTo(loc)+"");
 		}
+		locationManager.removeUpdates(this);
 		loc=p1;
+		showtext(loc.toString());
 		isfirst=false;
 		currnt=findNearest("alley",loc);
 		if(currnt==null){
 			showtext("نتایج خالی");
 		}
-		tv.setText(currnt.getPhone() +"   \n "+ currnt.getName());
+		tv.setText(currnt.getPhone() +"   \n "+ currnt.getName()+"  فاصله"+currnt.distanceTo(loc));
 	}
 
 	@Override
@@ -283,35 +285,16 @@ public class MainActivity extends AppCompatActivity implements LocationListener
 	private void showtext(String s){
 		Toast.makeText(this,s,Toast.LENGTH_LONG).show();
 	}
-	//باید از دیتابیس‌پر شود
-//	private void fillAmaken(){
-//		Random rand=new Random(9999999);
-//		String slt=null;
-//		String slg=null;
-//		for(int i=9999;i>1;i--){
-//			int rnd=rand.nextInt();
-//			mLocation m=new mLocation("gps");
-//		     slt=mlt+rnd;
-//			 slg=mlg+rnd;
-//			m.setLatitude(Double.valueOf(mlt));
-//			m.setLongitude(Double.valueOf(mlg));
-//			m.setName("m+"+i);
-//			int ctt=i%9;
-//			m.setCategory("cat"+ctt);
-//			m.setPhone("+9817"+i);
-//			tv.append("\n "+m.getPhone());
-//			amaken.add(m);
-//		}
-//	}
+	
 	//تشخیص نزدیکترین واحد
 	private mLocation findNearest(String cat,Location l){
 		mLocation min=new mLocation("gps");
 		int i=0;
 		double did=0;
 		for(mLocation m:amaken){
-			if(!m.getCategory().equals(cat)){
-				continue;
-			}
+			//if(!m.getCategory().equals(cat)){
+				//continue;
+			//}
 			if(i==0){
 				min=m;
 				i=1;
@@ -326,4 +309,22 @@ public class MainActivity extends AppCompatActivity implements LocationListener
 	
 		return min;
 	}
+
+	@Override
+	protected void onPause()
+	{
+		locationManager.removeUpdates(this);
+		// TODO: Implement this method
+		super.onPause();
+	}
+
+	@Override
+	public void onBackPressed()
+	{
+		locationManager.removeUpdates(this);
+		// TODO: Implement this method
+		super.onBackPressed();
+	}
+	
+	
 }
