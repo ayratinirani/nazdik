@@ -72,7 +72,7 @@ public class networks
 		// Tag used to cancel the request
 		String tag_json_arry = "json_array_req";
 RequestQueue mQueue=Volley.newRequestQueue(mcontext);
-		String url = "http://127.0.0.1:8080/osm/getlist.php";
+		String url =NZapp.BASEURL+ "getlist.php";
 
 		final ProgressDialog pDialog = new ProgressDialog(mcontext);
 		pDialog.setMessage("Loading...");

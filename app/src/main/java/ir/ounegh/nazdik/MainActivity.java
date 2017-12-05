@@ -13,6 +13,8 @@ import android.location.*;
 import android.widget.*;
 import android.graphics.*;
 import java.util.*;
+import android.view.*;
+import android.net.*;
 
 
 public class MainActivity extends AppCompatActivity implements LocationListener
@@ -28,6 +30,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener
 	ArrayList<mLocation>amaken=new ArrayList<>();
     ArrayList<String>cats=new ArrayList<>();
 	private String selecedcat;
+	Button b;
 	@Override
 	public void onLocationChanged(Location p1)
 	{
@@ -42,13 +45,14 @@ public class MainActivity extends AppCompatActivity implements LocationListener
 		}
 		locationManager.removeUpdates(this);
 		loc=p1;
+		b.setVisibility(View.VISIBLE);
 		showtext(loc.toString());
 		isfirst=false;
 		currnt=findNearest("alley",loc);
 		if(currnt==null){
 			showtext("نتایج خالی");
 		}
-		tv.setText(currnt.getPhone() +"   \n "+ currnt.getName()+"  فاصله"+currnt.distanceTo(loc));
+		tv.setText(currnt.getPhone() +"\n"+ currnt.getName()+"\n"+"فاصله"+(int)currnt.distanceTo(loc)+"\n"+"سمت  "+currnt.jahat(p1));
 	}
 
 	@Override
@@ -96,7 +100,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener
 		long now=System.currentTimeMillis();
 		updateDatabase();
 		
-		
+		b=(Button) findViewById(R.id.mainButton);
+		b.setVisibility(View.GONE);
 		
     }
 //دریافت انواع کتگوری ها
@@ -326,5 +331,12 @@ public class MainActivity extends AppCompatActivity implements LocationListener
 		super.onBackPressed();
 	}
 	
+	public void call(View v){
+		String phone_number=currnt.getPhone();
+		
+		Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phone_number));
+		startActivity(intent);
+		
+	}
 	
 }

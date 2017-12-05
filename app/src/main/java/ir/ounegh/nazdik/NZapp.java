@@ -18,7 +18,7 @@ public class NZapp extends Application
 	
 	public static String APPNAME="NZApp";
 	public static long LASTUPDATE_TIME=0l;
-	public static String BASEURL="127.0.0.1:8080/osm/";
+	public static String BASEURL="127.0.0.1:8080/nazdik/";
 	@Override
 	public void onCreate()
 	{

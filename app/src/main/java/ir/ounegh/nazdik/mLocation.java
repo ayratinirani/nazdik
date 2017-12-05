@@ -61,5 +61,11 @@ public class mLocation extends Location
 		// TODO: Implement this method
 		return name+"  "+category+"  "+id+"   "+phone+  super.toString();
 	}
+	public String jahat(Location l){
+		String[]jahatha=new String[]{"شمال","شمال شرقی","جنوب شرقی","جنوب","جنوب غربی","غرب","شمال","شمال غربی"};
+		int bear=(int)l.bearingTo(this)/45;
+		
+		return jahatha[bear];
+	}
 	 
 }
