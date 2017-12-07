@@ -1,0 +1,31 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="100dp"
+    android:orientation="horizontal"
+
+	>
+    <TextView
+		android:layout_width="0dp"
+		android:id="@+id/itemText_name"
+		android:text=" نام "
+		android:textSize="20sp"
+		android:layout_height="match_parent"
+		android:layout_weight="5"
+		/>
+	<TextView
+		android:layout_width="0dp"
+		android:layout_weight="2"
+		android:id="@+id/itemText_phone"
+		android:text=" تلفن "
+		android:textSize="20sp"
+        android:layout_height="match_parent"
+	/>
+	<TextView
+		android:layout_width="0dp"
+		android:id="@+id/itemText_name"
+		android:text=" فاصله "
+		android:textSize="20sp"
+		android:layout_weight="3"
+android:layout_height="match_parent"
+	/>
+</LinearLayout>

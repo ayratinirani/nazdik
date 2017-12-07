@@ -9,7 +9,8 @@ import android.text.*;
 
 public class NZapp extends Application
 {
-	private RequestQueue mRequestQueue;
+	public static EnhancedActivity CURRENT_ACTIVITY;
+	private static RequestQueue mRequestQueue;
 	private static NZapp mInstance;
 	public static String TAG;
 	public static Context APPCONTEXT;
@@ -18,16 +19,16 @@ public class NZapp extends Application
 	
 	public static String APPNAME="NZApp";
 	public static long LASTUPDATE_TIME=0l;
-	public static String BASEURL="127.0.0.1:8080/nazdik/";
+	public static String BASEURL;
 	@Override
 	public void onCreate()
 	{
+		super.onCreate();
 
 		APPCONTEXT=getApplicationContext();
 		PREFS=APPCONTEXT.getSharedPreferences(APPNAME,0);
-		
+		BASEURL="127.0.0.1:8080/nazdik/";
 		LASTUPDATE_TIME = PREFS.getLong("LASTUPDATETIME", 0);
-		super.onCreate();
 		mInstance=this;
 		AndroidNetworking.initialize(getApplicationContext());
 	}

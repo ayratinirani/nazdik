@@ -12,11 +12,12 @@ import android.app.*;
 import com.android.volley.toolbox.*;
 import com.android.volley.*;
 import com.android.volley.Response;
+import android.support.v7.app.*;
 
 public class networks
-{ Context mcontext;
+{ AppCompatActivity mcontext;
 	 ArrayList<mLocation> amaken=new ArrayList<>();
-	public networks(Context c){
+	public networks(AppCompatActivity c){
 		mcontext=c;
 	}
 	public ArrayList<mLocation>getFromServer(){
@@ -72,10 +73,10 @@ public class networks
 		// Tag used to cancel the request
 		String tag_json_arry = "json_array_req";
 RequestQueue mQueue=Volley.newRequestQueue(mcontext);
-		String url =NZapp.BASEURL+ "getlist.php";
-
+		String url ="http://127.0.0.1:8080/nazdik/"+ "getlist.php";
+		 url ="http://ounegh.ir/nazdik/"+ "getlist.php";
 		final ProgressDialog pDialog = new ProgressDialog(mcontext);
-		pDialog.setMessage("Loading...");
+		pDialog.setMessage("دریافت اماکن");
 		pDialog.show();     
 
 		//You can send json array request as below.
@@ -85,8 +86,8 @@ RequestQueue mQueue=Volley.newRequestQueue(mcontext);
 				@Override
 				public void onResponse(JSONArray response) {
 					pDialog.dismiss();
+					//Toast.makeText(mcontext,response.toString(),Toast.LENGTH_LONG).show();
 					Toast.makeText(mcontext,response.toString(),Toast.LENGTH_LONG).show();
-					
 					parseJsnArray(response);
 					
 					
@@ -124,10 +125,64 @@ RequestQueue mQueue=Volley.newRequestQueue(mcontext);
 				m.setCategory(obj.getString("category"));
 				amaken.add(m);
 			}catch(Exception e){
+				
 				e.printStackTrace();
 			}
 		}
 		return amaken;
+	}
+	public ArrayList<String>getcats(){
+		final ArrayList<String>cats=new ArrayList<>();
+		
+		
+			// Tag used to cancel the request
+			String tag_json_arry = "json_array_req";
+			RequestQueue mQueue=Volley.newRequestQueue(mcontext);
+			//String url ="http://127.0.0.1:8080/nazdik/"+ "getcats.php";
+		String url="http://ounegh.ir/nazdik/getcats.php";
+			final ProgressDialog pDialog = new ProgressDialog(mcontext);
+			pDialog.setMessage("دریافت دسته بندی ها");
+			pDialog.show();     
+
+			//You can send json array request as below.
+
+			JsonArrayRequest jsonArrayReq = new JsonArrayRequest(url,
+				new Response.Listener<JSONArray>() {
+					@Override
+					public void onResponse(JSONArray response) {
+						pDialog.dismiss();
+						Toast.makeText(mcontext,response.toString(),Toast.LENGTH_LONG).show();
+						//Toast.makeText(mcontext,response.toString(),Toast.LENGTH_LONG).show();
+                        for(int i=0;i<response.length();i++){
+							try
+							{
+								
+								JSONObject object =response.getJSONObject(i);
+								cats.add(object.getString("category"));
+							}
+							catch (JSONException e)
+							{
+								pDialog.dismiss();
+								e.printStackTrace();
+							}
+						}
+						
+
+
+					}
+				},
+				new Response.ErrorListener() {
+					@Override
+					public void onErrorResponse(VolleyError error) {
+						pDialog.dismiss();
+						Toast.makeText(mcontext,error.getMessage(),Toast.LENGTH_LONG).show();
+					}
+				});
+			mQueue.start();
+
+	
+		
+		return cats;
 	}
 	
 }

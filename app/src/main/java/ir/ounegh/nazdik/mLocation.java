@@ -11,6 +11,9 @@ public class mLocation extends Location
 		
 		super(l);
 	}
+	public mLocation(){
+		super("gps");
+	}
 	public mLocation(String p){
 		super(p);
 	}
@@ -62,10 +65,19 @@ public class mLocation extends Location
 		return name+"  "+category+"  "+id+"   "+phone+  super.toString();
 	}
 	public String jahat(Location l){
-		String[]jahatha=new String[]{"شمال","شمال شرقی","جنوب شرقی","جنوب","جنوب غربی","غرب","شمال","شمال غربی"};
-		int bear=(int)l.bearingTo(this)/45;
-		
+		String[]jahatha=new String[]{"شمال","شمال شرقی","شرق","جنوب شرقی","جنوب","جنوب غربی","غرب","شمال غربی"};
+		int bear=(int)(l.bearingTo(this)/45);
+		if(bear<0){
+			return "";
+		}
 		return jahatha[bear];
+	
+	}
+	
+	public String faseleh(Location loc){
+		int dis=(int) this.distanceTo(loc);
+		
+		return String.valueOf(dis);
 	}
 	 
 }

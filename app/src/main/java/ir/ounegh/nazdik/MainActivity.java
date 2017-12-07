@@ -15,50 +15,55 @@ import android.graphics.*;
 import java.util.*;
 import android.view.*;
 import android.net.*;
+import android.widget.AdapterView.*;
+import com.jaredrummler.materialspinner.*;
 
 
-public class MainActivity extends AppCompatActivity implements LocationListener
+public class MainActivity extends EnhancedActivity implements LocationListener
 {
-	private static String mlt="37.";
-	private static String mlg="54.";
 	boolean isfirst=true;
 	Location loc;
 	mdb MDB;
-	mLocation currnt= new mLocation("gps");
+	mLocation currnt= new mLocation();
 	public static boolean cancall=false;
     TextView tv;
 	ArrayList<mLocation>amaken=new ArrayList<>();
     ArrayList<String>cats=new ArrayList<>();
 	private String selecedcat;
+	networks neti;
+	ListView lv;
+	Spinner spinner;
+	String[]catha;
 	Button b;
 	@Override
 	public void onLocationChanged(Location p1)
 	{
+		if(amaken.size()==0 ||amaken==null){
+			return;
+		}
 		
-		// TODO: Implement this method
 		tv.setBackgroundColor(0x223aff);
 		
-	  //  tv.setText(p1.bearingTo() +"");
-		//tv.setText(p1.toString());
-		if(!isfirst){
-			//tv.setText(p1.bearingTo(loc)+"");
-		}
+	 
 		locationManager.removeUpdates(this);
 		loc=p1;
 		b.setVisibility(View.VISIBLE);
-		showtext(loc.toString());
+		
 		isfirst=false;
-		currnt=findNearest("alley",loc);
+		currnt=findNearest(loc);
+		
+		
 		if(currnt==null){
 			showtext("نتایج خالی");
-		}
-		tv.setText(currnt.getPhone() +"\n"+ currnt.getName()+"\n"+"فاصله"+(int)currnt.distanceTo(loc)+"\n"+"سمت  "+currnt.jahat(p1));
+			return;
+		}else{
+		tv.setText(currnt.getPhone() +"\n"+ currnt.getName()+"\n"+"فاصله"+(int)currnt.distanceTo(loc)+"\n"+"سمت  "+currnt.jahat(loc));
+	}
 	}
 
 	@Override
 	public void onStatusChanged(String p1, int p2, Bundle p3)
 	{
-		// TODO: Implement this method
 	}
 
 	@Override
@@ -78,56 +83,75 @@ public class MainActivity extends AppCompatActivity implements LocationListener
 	
 	LocationManager locationManager;
     @Override
-    protected void onCreate(Bundle savedInstanceState)
+    public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         checkLocationPermission();
-		MDB=new mdb(this);
-        getcategories();
-        tv=(TextView) findViewById(R.id.mainTextView);
-         loc=new Location("gps");
-         locationManager=(LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		if(locationManager.getLastKnownLocation("gps")!=null){
-			
-			 loc=locationManager.getLastKnownLocation("gpps");
-			tv.setBackgroundColor(0x119f55);
-		//	tv.setText(loc.getLatitude()+"");
-			}
-			///این تابع جهت تست اولیه بودfillAmaken();
 		CalcheckLocationPermission();
-		NZapp.LASTUPDATE_TIME=0;
-		long now=System.currentTimeMillis();
-		updateDatabase();
-		
+		//MDB=new mdb(this);
+		neti=new networks(this);
+		lv=(ListView) findViewById(R.id.mainListView);
+		tv=(TextView) findViewById(R.id.mainTextView);
+		loc=new Location("gps");
+		locationManager=(LocationManager) getSystemService(Context.LOCATION_SERVICE);
+		if(locationManager.getLastKnownLocation("gps")!=null){
+
+			loc=locationManager.getLastKnownLocation("gpps");
+			tv.setBackgroundColor(0x119f55);
+
+		}
+
+
+
 		b=(Button) findViewById(R.id.mainButton);
 		b.setVisibility(View.GONE);
+      // getcategories();
+	 updateDatabase();
+        
+         
 		
     }
 //دریافت انواع کتگوری ها
 	private void getcategories()
 	{ 
-		cats=MDB.getcats();
+		//cats=MDB.getcats();
+		
+		
+	cats=neti.getcats();
+		//updateDatabase();
+	if(cats==null || cats.size()<1){
+		showtext("server didnt give categories");
+		return;
+	}
+		MaterialSpinner spinner = (MaterialSpinner) findViewById(R.id.spinner);
+		spinner.setItems(cats);
+		spinner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
+
+				@Override public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
+					showtext(item);
+				}
+			});
+	
 	
 		
 		
-			
-		if(cats==null){
-			showtext("دیتابیس خال");
-		}
 	}
 //اپدیت هفتگی دیتابیس
 	private void updateDatabase()
 	{
 		
-		networks net=new networks(this);
-		amaken=net.getall();
-		NZapp.LASTUPDATE_TIME=System.currentTimeMillis();
-		for(mLocation ml:amaken){
-			MDB.insertRecord(ml);
+		//networks net=new networks(this);
+	   amaken=neti.getall();
+		//amaken=neti.getFromServer();
+		if(amaken==null || amaken.size()<1){
+			showtext("server error");
+			return;
 		}
+		showtext(amaken.toString());
+		ArrayAdapter a=new ArrayAdapter(this,android.R.layout.simple_list_item_1,android.R.id.text1,amaken);
 		
-		
+		lv.setAdapter(a);
 	}
 	
 	
@@ -292,8 +316,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener
 	}
 	
 	//تشخیص نزدیکترین واحد
-	private mLocation findNearest(String cat,Location l){
-		mLocation min=new mLocation("gps");
+	private mLocation findNearest(Location l){
+		mLocation min=new mLocation();
 		int i=0;
 		double did=0;
 		for(mLocation m:amaken){

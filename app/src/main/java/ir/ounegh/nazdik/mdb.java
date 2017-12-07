@@ -77,11 +77,11 @@ public class mdb extends SQLiteOpenHelper
 	public void insertRecord(mLocation mloc) {
 		database = this.getReadableDatabase();
 		ContentValues contentValues = new ContentValues();
-		contentValues.put(COL_NAME, mloc.getName());
-		contentValues.put(COL_PHONE, mloc.getPhone());
-		contentValues.put(C_ID,mloc.getId());
-		contentValues.put(C_LAT,mloc.getLatitude());
-		contentValues.put(C_LON,mloc.getLongitude());
+		//contentValues.put(COL_NAME, mloc.getName());
+		//contentValues.put(COL_PHONE, mloc.getPhone());
+		//contentValues.put(C_ID,mloc.getId());
+		//contentValues.put(C_LAT,mloc.getLatitude());
+		//contentValues.put(C_LON,mloc.getLongitude());
 		contentValues.put(C_CAT,mloc.getCategory());
 		database.insert(TABLE_AMAKEN, null, contentValues);
 		database.close();
